@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class HanoiGameManager : MonoBehaviour
 {
-    [SerializeField] GameObject tower1;
-    [SerializeField] GameObject tower2;
-    [SerializeField] GameObject tower3;
+    [SerializeField] GameObject towerLeft;
+    [SerializeField] GameObject towerMid;
+    [SerializeField] GameObject towerRight;
 
     [SerializeField] GameObject diskPrefab;
 
@@ -41,7 +41,7 @@ public class HanoiGameManager : MonoBehaviour
 
         for (int i = 0; i < numberOfDisk; i++)
         {
-            var newPlate = Instantiate(diskPrefab, tower1.transform);
+            var newPlate = Instantiate(diskPrefab, towerLeft.transform);
             newPlate.name = $"Disk {numberOfDisk - i}";
 
             var transform = newPlate.transform;
@@ -52,8 +52,8 @@ public class HanoiGameManager : MonoBehaviour
             transform.position = pos;
 
             // Set Scale
-            var scale = Vector3.one;
-            scale.x = scale.z = i * diskRadiusGrowth;
+            var scale = transform.localScale;
+            scale.x = scale.z = 1 + (i * diskRadiusGrowth);
             transform.localScale = scale;
 
             // Set Color
@@ -88,19 +88,11 @@ public class HanoiGameManager : MonoBehaviour
     }
 
     #region Test
-    [ContextMenu("Test1")]
+    [ContextMenu("Test3")]
     void Test1()
     {
         GameClear();
-        GameSetup(new GameSettings { DiskNum = 1 });
-
-        GameStart();
-    }
-    [ContextMenu("Test2")]
-    void Test2()
-    {
-        GameClear();
-        GameSetup(new GameSettings { DiskNum = 2 });
+        GameSetup(new GameSettings { DiskNum = 4 });
 
         GameStart();
     }
@@ -108,7 +100,7 @@ public class HanoiGameManager : MonoBehaviour
     void Test3()
     {
         GameClear();
-        GameSetup(new GameSettings { DiskNum = 50 });
+        GameSetup(new GameSettings { DiskNum = 1 });
 
         GameStart();
     }
