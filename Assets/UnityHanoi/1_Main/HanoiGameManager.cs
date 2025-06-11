@@ -17,6 +17,19 @@ public class HanoiGameManager : MonoBehaviour
     // Spawn Settings
     float diskLevelOffset = 0.1f;
     float diskRadiusGrowth = 0.1f;
+    List<Color> colors = new()
+    {
+        Color.red,
+        Color.blue,
+        Color.green,
+        Color.yellow,
+        new Color(1f, 0.5f, 0f),       // orange
+        new Color(0.5f, 0f, 0.5f),     // purple
+        Color.black,
+        Color.white,
+        Color.gray,
+        Color.cyan
+    };
 
     // User Interaction
     enum TowerSelectMode { Start, End }
@@ -235,8 +248,7 @@ public class HanoiGameManager : MonoBehaviour
                 transform.localScale = scale;
 
                 // Set Color
-                newDisk.GetComponent<MeshRenderer>().material.color =
-                    new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+                newDisk.GetComponent<MeshRenderer>().material.color = colors[number-1];
 
                 disks.Add(newDisk);
             }

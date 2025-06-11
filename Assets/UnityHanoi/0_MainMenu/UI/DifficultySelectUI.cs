@@ -31,7 +31,7 @@ public class DifficultySelectUI : MonoBehaviour
         {
             DifficultyText = $"Difficulty : [{evt.newValue}]";
         });
-        slider.value = 1;
+        slider.value = 3;
 
         startBtn = main.Q("Start") as Button;
         startBtn.RegisterCallback<ClickEvent>(OnStartClick);
