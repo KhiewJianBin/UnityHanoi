@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UnityHanoi/UI/defaultstyle.uss?fileID=7433441132597879392&amp;guid=2ad3c6a79ab963c47a394df7e9f5ef2c&amp;type=3#defaultstyle" />
+    <ui:VisualElement name="Main" class="main">
+        <ui:Label text="Tower of Hanoi" enable-rich-text="true" name="Title" class="main__title">
+            <Bindings>
+                <ui:DataBinding property="text" update-trigger="OnSourceChanged" data-source-path="test" binding-mode="ToTarget" />
+            </Bindings>
+        </ui:Label>
+        <ui:VisualElement name="ButtonGroup" class="main__buttongrp">
+            <ui:SliderInt label="SliderInt" value="8" high-value="10" enabled="true" fill="true" low-value="1" page-size="0.04" name="Difficulty" style="letter-spacing: 18px; font-size: 20px;" />
+            <ui:Button text="Start" name="Start" class="main__button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

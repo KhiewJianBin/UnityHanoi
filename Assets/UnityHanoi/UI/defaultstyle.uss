@@ -1,0 +1,88 @@
+:root {
+}
+
+.main {
+    flex-grow: 1;
+    right: auto;
+    left: auto;
+    position: relative;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: center;
+    align-content: auto;
+    width: 50%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+.main__title {
+    height: auto;
+    -unity-text-align: middle-center;
+    white-space: pre;
+    text-overflow: clip;
+    top: auto;
+    width: 705px;
+    font-size: 100px;
+    align-items: auto;
+    align-content: auto;
+}
+
+.main__buttongrp {
+    flex-grow: 1;
+    width: 700px;
+    margin-top: 100px;
+}
+
+.main__button {
+    height: 100px;
+    font-size: 70px;
+    background-color: rgb(91, 155, 213);
+    margin-top: 24px;
+    margin-bottom: 24px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+.gameover {
+    flex-grow: 1;
+    right: auto;
+    left: auto;
+    position: relative;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: center;
+    align-content: auto;
+    width: 50%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+.gameover__title {
+    font-size: 80px;
+}
+
+.gameover__button {
+    height: 100px;
+    font-size: 70px;
+    background-color: rgb(91, 155, 213);
+    margin-top: 24px;
+    margin-bottom: 24px;
+    border-top-left-radius: 19px;
+    border-top-right-radius: 19px;
+    border-bottom-right-radius: 19px;
+    border-bottom-left-radius: 19px;
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+    padding-top: 50px;
+    padding-right: 50px;
+    padding-bottom: 50px;
+    padding-left: 50px;
+}

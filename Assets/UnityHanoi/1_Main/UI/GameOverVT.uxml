@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UnityHanoi/UI/defaultstyle.uss?fileID=7433441132597879392&amp;guid=2ad3c6a79ab963c47a394df7e9f5ef2c&amp;type=3#defaultstyle" />
+    <ui:VisualElement name="Main" class="gameover" style="justify-content: space-between; margin-top: 15%; margin-bottom: 15%;">
+        <ui:Label text="You Win!" enable-rich-text="true" class="gameover__title" />
+        <ui:VisualElement name="ButtonGroup">
+            <ui:Button text="Play Again?" name="PlayAgain" enabled="true" class="gameover__button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

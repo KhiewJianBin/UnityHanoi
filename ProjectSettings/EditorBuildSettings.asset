@@ -4,8 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/UnityHanoi/0_MainMenu/0_MainMenu.unity
+    guid: 6820fe9a79f77f745894289814dd0273
+  - enabled: 1
+    path: Assets/UnityHanoi/1_Main/1_Main.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 3a76aa0843ad0a2478f46805e6f2ee26, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: cd98b09dfa090ce4fbf75f073c93efd7, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 395081fe51495a34eac0bd046554bd12, type: 2}
   m_UseUCBPForAssetBundles: 0

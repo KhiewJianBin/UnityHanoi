@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UnityHanoi/UI/defaultstyle.uss?fileID=7433441132597879392&amp;guid=2ad3c6a79ab963c47a394df7e9f5ef2c&amp;type=3#defaultstyle" />
+    <ui:VisualElement name="Main" class="main">
+        <ui:Label text="Tower of Hanoi" enable-rich-text="true" name="Title" class="main__title" />
+        <ui:VisualElement name="ButtonGroup" class="main__buttongrp">
+            <ui:Button text="Continue" name="Continue" enabled="true" class="main__button" />
+            <ui:Button text="New" name="New" class="main__button" />
+        </ui:VisualElement>
+        <ui:Label text="by Khiew Jian Bin" style="font-size: 25px; position: absolute; bottom: 0; right: auto; top: auto;" />
+    </ui:VisualElement>
+</ui:UXML>
