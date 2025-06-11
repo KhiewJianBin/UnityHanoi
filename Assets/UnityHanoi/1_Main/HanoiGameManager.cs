@@ -19,6 +19,8 @@ public class HanoiGameManager : MonoBehaviour
 
     [SerializeField] GameOverUI gameOverUI;
 
+    Tower selectedTower;
+
     void GameClear()
     {
         if (disks != null)
@@ -37,7 +39,30 @@ public class HanoiGameManager : MonoBehaviour
         numberOfDisk = settings.DiskNum;
 
         SpawnTowerAndDisk();
+
+        Selector.Instance.RegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
     }
+
+    void OnSelectTower(GameObject towerGO)
+    {
+        var tower = towerGO.GetComponent<Tower>();
+
+        if(selectedTower != null && selectedTower != tower)
+        {
+            selectedTower.Unhighlight();
+        }
+
+        selectedTower = tower;
+        selectedTower.Highlight();
+    }
+    void OnDeselectTower()
+    {
+        if (selectedTower != null)
+        {
+            selectedTower.Unhighlight();
+        }
+    }
+
     void SpawnTowerAndDisk()
     {
         disks = new();
@@ -87,7 +112,7 @@ public class HanoiGameManager : MonoBehaviour
     void Start()
     {
         Test3();
-        GameEnd();
+        //GameEnd();
     }
 
     #region Test
@@ -107,5 +132,7 @@ public class HanoiGameManager : MonoBehaviour
 
         GameStart();
     }
+
+
     #endregion
 }
