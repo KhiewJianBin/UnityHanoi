@@ -12,8 +12,17 @@ public class Selector : Singleton<Selector>
     {
         selectionLayerMask |= layerMask;
 
-        this.onSelectionAction = onSelectionAction;
-        this.onEmptySelectionAction = onEmptySelectionAction;
+        this.onSelectionAction += onSelectionAction;
+        this.onEmptySelectionAction += onEmptySelectionAction;
+    }
+
+    public void UnRegisterSelection(int layerMask,
+        UnityAction<GameObject> onSelectionAction, UnityAction onEmptySelectionAction)
+    {
+        selectionLayerMask &= ~layerMask;
+
+        this.onSelectionAction -= onSelectionAction;
+        this.onEmptySelectionAction -= onEmptySelectionAction;
     }
 
     void Update()

@@ -16,11 +16,11 @@ public class MainMenuUI : MonoBehaviour
     public void Display(bool showContinue,
         UnityAction continueAction = null, UnityAction newAction = null)
     {
-        gameObject.SetActive(true);
-
         this.showContinue = showContinue;
         this.continueAction = continueAction;
         this.newAction = newAction;
+
+        gameObject.SetActive(true);
     }
     public void Hide() => gameObject.SetActive(false);
 

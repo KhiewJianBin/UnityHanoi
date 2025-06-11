@@ -184,8 +184,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UIDoc: {fileID: 105964309}
-  Difficulty: 123
-  test: 
+  DifficultyText: 'Difficulty : [1]'
+  Difficulty: 1
 --- !u!1 &260713479
 GameObject:
   m_ObjectHideFlags: 0

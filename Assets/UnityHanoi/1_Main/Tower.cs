@@ -5,6 +5,8 @@ public class Tower : MonoBehaviour
     [SerializeField] GameObject baseModel;
     [SerializeField] GameObject highlight;
 
+    public int Id { get; set; }
+
     public void SetBaseScale(int diskNum)
     {
         var scale = baseModel.transform.localScale;

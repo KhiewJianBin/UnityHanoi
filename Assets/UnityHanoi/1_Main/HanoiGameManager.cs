@@ -1,138 +1,272 @@
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class HanoiGameManager : MonoBehaviour
 {
-    [SerializeField] GameObject towerLeft;
-    [SerializeField] GameObject towerMid;
-    [SerializeField] GameObject towerRight;
+    [SerializeField] Tower towerLeft;
+    [SerializeField] Tower towerMid;
+    [SerializeField] Tower towerRight;
 
     [SerializeField] GameObject diskPrefab;
 
-    int numberOfDisk;
-    List<GameObject> disks;
+    [SerializeField] GameOverUI gameOverUI;
 
     // Spawn Settings
     float diskLevelOffset = 0.1f;
     float diskRadiusGrowth = 0.1f;
 
-    [SerializeField] GameOverUI gameOverUI;
+    // User Interaction
+    enum TowerSelectMode { Start, End }
+    TowerSelectMode selectMode = TowerSelectMode.Start;
+    Tower selectedStartTower;
 
-    Tower selectedTower;
+    // Game Cache
+    string prevGameState;
+    string gameState;
+    List<GameObject> disks = new();
 
-    void GameClear()
+    void Awake()
     {
-        if (disks != null)
+        towerLeft.Id = 0;
+        towerMid.Id = 1;
+        towerRight.Id = 2;
+    }
+
+    public void GameStart(int difficulty)
+    {
+        StringBuilder sb = new();
+        for (int i = difficulty; i > 0; i--)
         {
-            foreach (var disk in disks)
-            {
-                Destroy(disk);
-            }
-            disks = null;
+            sb.Append(i);
         }
+        sb.Append("__");
+        gameState = sb.ToString();
 
-        numberOfDisk = 0;
+        GameStart(gameState);
     }
-    public void GameSetup(GameSettings settings)
+    public void GameStart(string gameState)
     {
-        numberOfDisk = settings.DiskNum;
+        this.gameState = gameState;
 
-        SpawnTowerAndDisk();
-
-        Selector.Instance.RegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
+        GameSetup();
+        if (VerifyGameState())
+        {
+            LoadGameState();
+        }
     }
-
     void OnSelectTower(GameObject towerGO)
     {
         var tower = towerGO.GetComponent<Tower>();
 
-        if(selectedTower != null && selectedTower != tower)
+        if (selectMode == TowerSelectMode.Start)
         {
-            selectedTower.Unhighlight();
-        }
+            if (selectedStartTower != null && selectedStartTower != tower)
+            {
+                selectedStartTower.Unhighlight();
+            }
 
-        selectedTower = tower;
-        selectedTower.Highlight();
+            selectedStartTower = tower;
+            selectedStartTower.Highlight();
+
+            selectMode = TowerSelectMode.End;
+        }
+        else if (selectMode == TowerSelectMode.End)
+        {
+            UpdateGameState(selectedStartTower, tower);
+            if (!VerifyGameState())
+            {
+                gameState = prevGameState;
+            }
+            else
+            {
+                SaveGameStateToFile();
+                LoadGameState();
+            }
+
+            if (VerifyWinGameState())
+            {
+                EndGame();
+            }
+
+            selectedStartTower.Unhighlight();
+            selectedStartTower = null;
+
+            selectMode = TowerSelectMode.Start;
+        }
     }
     void OnDeselectTower()
     {
-        if (selectedTower != null)
+        if (selectedStartTower != null)
         {
-            selectedTower.Unhighlight();
+            selectedStartTower.Unhighlight();
+            selectedStartTower = null;
+
+            selectMode = TowerSelectMode.Start;
         }
     }
 
-    void SpawnTowerAndDisk()
+    void UpdateGameState(Tower towerStart, Tower towerEnd)
     {
+        var data = gameState.Split("_");
+        var towerLeft_data = data[0];
+        var towerMid_data = data[1];
+        var towerRight_data = data[2];
+
+        if (data[towerStart.Id].Length == 0) return;
+
+        var lastChar = data[towerStart.Id][data[towerStart.Id].Length - 1];
+        data[towerEnd.Id] = data[towerEnd.Id] + lastChar;
+        data[towerStart.Id] = data[towerStart.Id].Remove(data[towerStart.Id].Length - 1);
+
+        prevGameState = gameState;
+        gameState = string.Join('_', data);
+    }
+    bool VerifyWinGameState()
+    {
+        var data = gameState.Split("_");
+        var towerLeft_data = data[0];
+        var towerMid_data = data[1];
+        var towerRight_data = data[2];
+
+        if (towerLeft_data.Length == 0 && towerMid_data.Length == 0 && towerRight_data.Length != 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    void GameSetup()
+    {
+        Selector.Instance.RegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
+    }
+    bool VerifyGameState()
+    {
+        var data = gameState.Split("_");
+        var towerLeft_data = data[0];
+        var towerMid_data = data[1];
+        var towerRight_data = data[2];
+
+        // Verify Tower Data
+        if (!VerifyMissingOrDuplicates(gameState))
+        {
+            Debug.LogWarning("GameState/Data Corrupted");
+            return false;
+        }
+        bool correctOrder = VerifyOrder(towerLeft_data) && VerifyOrder(towerMid_data) && VerifyOrder(towerRight_data);
+        if (!correctOrder)
+        {
+            Debug.LogWarning("GameState/Data Corrupted");
+            return false;
+        }
+
+        return true;
+
+        bool VerifyMissingOrDuplicates(string data)
+        {
+            data = data.Replace("_", "");
+
+            List<int> numbers = new(data.Length);
+            for (int i = 0; i < data.Length; i++)
+            {
+                char c = data[i];
+                if (!char.IsDigit(c)) return false;
+
+                numbers.Add(int.Parse(c.ToString()));
+            }
+
+            return numbers.Count == numbers.Distinct().Count();
+        }
+        bool VerifyOrder(string towerData)
+        {
+            for (int i = 0; i < towerData.Length - 1; i++)
+            {
+                if (towerData[i] < towerData[i + 1])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    void LoadGameState()
+    {
+        var data = gameState.Split("_");
+        var towerLeft_data = data[0];
+        var towerMid_data = data[1];
+        var towerRight_data = data[2];
+        var maxNumberOfDisk = towerLeft_data.Length + towerMid_data.Length + towerRight_data.Length;
+
+        //GameClear
+        foreach (var disk in disks)
+        {
+            Destroy(disk);
+        }
         disks = new();
 
-        for (int i = 0; i < numberOfDisk; i++)
+        LoadTower(towerLeft, towerLeft_data, maxNumberOfDisk);
+        LoadTower(towerMid, towerMid_data, maxNumberOfDisk);
+        LoadTower(towerRight, towerRight_data, maxNumberOfDisk);
+
+        void LoadTower(Tower tower, string towerData, int maxNumberOfDisk)
         {
-            var newPlate = Instantiate(diskPrefab, towerLeft.transform);
-            newPlate.name = $"Disk {numberOfDisk - i}";
+            for (int i = 0; i < towerData.Length; i++)
+            {
+                var number = int.Parse(towerData[i].ToString());
 
-            var transform = newPlate.transform;
+                var newDisk = Instantiate(diskPrefab, tower.transform);
+                newDisk.name = $"Disk {maxNumberOfDisk - number}";
 
-            // Set Position
-            var pos = transform.position;
-            pos.y = (numberOfDisk - i) * diskLevelOffset;
-            transform.position = pos;
+                var transform = newDisk.transform;
 
-            // Set Scale
-            var scale = transform.localScale;
-            scale.x = scale.z = 1 + (i * diskRadiusGrowth);
-            transform.localScale = scale;
+                // Set Position
+                var pos = transform.position;
+                pos.y = i * diskLevelOffset;
+                transform.position = pos;
 
-            // Set Color
-            newPlate.GetComponent<MeshRenderer>().material.color = Color.red;
+                // Set Scale
+                var scale = transform.localScale;
+                scale.x = scale.z = 1 + (number * diskRadiusGrowth);
+                transform.localScale = scale;
+
+                // Set Color
+                newDisk.GetComponent<MeshRenderer>().material.color =
+                    new Color32((byte)Random.Range(0, 255), (byte)Random.Range(0, 255), (byte)Random.Range(0, 255), 255);
+
+                disks.Add(newDisk);
+            }
         }
     }
-    void GameStart()
+    void EndGame()
     {
+        Selector.Instance.UnRegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
 
-    }
-
-    void GameEnd()
-    {
         gameOverUI.Display(PlayAgain);
-    }
 
+        PlayerPrefs.DeleteKey("GameState");
+        PlayerPrefs.Save();
+    }
     void PlayAgain()
     {
         SceneManager.LoadScene("0_MainMenu");
     }
 
-    public struct GameSettings
+    void SaveGameStateToFile()
     {
-        public int DiskNum;
-    }
-
-
-    void Start()
-    {
-        Test3();
-        //GameEnd();
+        PlayerPrefs.SetString("GameState", gameState);
+        PlayerPrefs.Save();
     }
 
     #region Test
-    [ContextMenu("Test3")]
-    void Test1()
+    [ContextMenu("TestStart")]
+    void Test()
     {
-        GameClear();
-        GameSetup(new GameSettings { DiskNum = 4 });
-
-        GameStart();
+        GameStart("321__");
     }
-    [ContextMenu("Test50")]
-    void Test3()
-    {
-        GameClear();
-        GameSetup(new GameSettings { DiskNum = 1 });
-
-        GameStart();
-    }
-
-
     #endregion
 }

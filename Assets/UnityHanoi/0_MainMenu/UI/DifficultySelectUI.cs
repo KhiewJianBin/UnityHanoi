@@ -10,8 +10,8 @@ public class DifficultySelectUI : MonoBehaviour
 
     [SerializeField] UIDocument UIDoc;
     // DataBinding
-    [SerializeField] string DifficultyText = "Difficulty : [1]";
-    [SerializeField] int Difficulty = 0;
+    [SerializeField, HideInInspector] string DifficultyText = "Difficulty : [3]";
+    [SerializeField, HideInInspector] int Difficulty = 3;
 
     public void Display(UnityAction<int> startAction = null)
     {

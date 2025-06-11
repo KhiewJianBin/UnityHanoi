@@ -3,7 +3,7 @@
     <ui:VisualElement name="Main" class="main">
         <ui:Label text="Tower of Hanoi" enable-rich-text="true" name="Title" class="main__title" />
         <ui:VisualElement name="ButtonGroup" class="main__buttongrp">
-            <ui:SliderInt label="Difficulty : [0]" value="8" high-value="10" enabled="true" fill="true" low-value="1" page-size="0.04" name="Difficulty" style="letter-spacing: 18px; font-size: 20px;">
+            <ui:SliderInt label="Difficulty : [0]" value="8" high-value="10" enabled="true" fill="true" low-value="3" page-size="0.04" name="Difficulty" style="letter-spacing: 18px; font-size: 20px;">
                 <Bindings>
                     <ui:DataBinding property="value" data-source-path="Difficulty" binding-mode="ToSource" />
                     <ui:DataBinding property="label" data-source-path="DifficultyText" binding-mode="ToTarget" />
