@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class HanoiGameManager : MonoBehaviour
 {
@@ -16,9 +17,11 @@ public class HanoiGameManager : MonoBehaviour
     float diskLevelOffset = 0.1f;
     float diskRadiusGrowth = 0.1f;
 
+    [SerializeField] GameOverUI gameOverUI;
+
     void GameClear()
     {
-        if(disks != null)
+        if (disks != null)
         {
             foreach (var disk in disks)
             {
@@ -67,7 +70,12 @@ public class HanoiGameManager : MonoBehaviour
 
     void GameEnd()
     {
+        gameOverUI.Display(PlayAgain);
+    }
 
+    void PlayAgain()
+    {
+        SceneManager.LoadScene("0_MainMenu");
     }
 
     public struct GameSettings
@@ -76,15 +84,10 @@ public class HanoiGameManager : MonoBehaviour
     }
 
 
-
-
-
-
-
-
     void Start()
     {
         Test3();
+        GameEnd();
     }
 
     #region Test

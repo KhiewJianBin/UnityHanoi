@@ -152,6 +152,7 @@ MonoBehaviour:
   towerMid: {fileID: 1303907824}
   towerRight: {fileID: 916572845}
   diskPrefab: {fileID: 833703218891211892, guid: 8231e7beb253c154fba800391ed32029, type: 3}
+  gameOverUI: {fileID: 1328079952}
 --- !u!4 &25269642
 Transform:
   m_ObjectHideFlags: 0
@@ -177,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 575890363}
   m_Layer: 0
-  m_Name: UI
+  m_Name: UIDocs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -195,8 +196,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1328079951}
+  m_Children:
+  - {fileID: 1328079951}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -493,12 +495,12 @@ GameObject:
   - component: {fileID: 1328079950}
   - component: {fileID: 1328079952}
   m_Layer: 5
-  m_Name: UIDocs
+  m_Name: GameOverVT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1328079950
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,13 +528,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328079949}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 575890363}
-  m_Father: {fileID: 0}
+  m_Children: []
+  m_Father: {fileID: 575890363}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1328079952
 MonoBehaviour:
@@ -1258,4 +1259,4 @@ SceneRoots:
   - {fileID: 1879211676}
   - {fileID: 1303907826}
   - {fileID: 916572847}
-  - {fileID: 1328079951}
+  - {fileID: 575890363}

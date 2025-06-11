@@ -4,16 +4,16 @@ using UnityEngine.UIElements;
 
 public class DifficultySelectUI : MonoBehaviour
 {
-    [SerializeField] UIDocument UIDoc;
-
-    UnityAction startAction;
+    UnityAction<int> startAction;
 
     Button startBtn;
 
-    [SerializeField] string Difficulty = "123";
-    [SerializeField] string test = "123";
+    [SerializeField] UIDocument UIDoc;
+    // DataBinding
+    [SerializeField] string DifficultyText = "Difficulty : [1]";
+    [SerializeField] int Difficulty = 0;
 
-    public void Display(UnityAction startAction = null)
+    public void Display(UnityAction<int> startAction = null)
     {
         gameObject.SetActive(true);
 
@@ -21,17 +21,19 @@ public class DifficultySelectUI : MonoBehaviour
     }
     public void Hide() => gameObject.SetActive(false);
 
-
     void OnEnable()
     {
         var main = UIDoc.rootVisualElement.Q("Main");
 
-        var slider = main.Q("Title");//Difficulty
+        var slider = main.Q("Difficulty") as SliderInt;
         slider.dataSource = this;
+        slider.RegisterCallback<ChangeEvent<int>>((evt) =>
+        {
+            DifficultyText = $"Difficulty : [{evt.newValue}]";
+        });
+        slider.value = 1;
 
-        var buttonGrp = main.Q("ButtonGroup");
-        startBtn = buttonGrp.Q("Start") as Button;
-
+        startBtn = main.Q("Start") as Button;
         startBtn.RegisterCallback<ClickEvent>(OnStartClick);
     }
 
@@ -42,6 +44,6 @@ public class DifficultySelectUI : MonoBehaviour
 
     void OnStartClick(ClickEvent evt)
     {
-        startAction?.Invoke();
+        startAction?.Invoke(Difficulty);
     }
 }

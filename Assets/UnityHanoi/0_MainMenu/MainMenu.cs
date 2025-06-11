@@ -13,7 +13,19 @@ public class MainMenu : MonoBehaviour
         savedGame = PlayerPrefs.GetString("savedGame");
         bool hasPrevGame = savedGame != string.Empty;
 
-        mainMenuUI.Display(hasPrevGame, StartGame, NewGame);
+        mainMenuUI.Display(hasPrevGame, ContinueGame, NewGame);
+    }
+
+    async void ContinueGame()
+    {
+        difficultySelectUI.Hide();
+
+        await SceneManager.LoadSceneAsync("1_Main", LoadSceneMode.Additive);
+
+        var test = GameObject.Find("HanoiGameManager");
+        //savedGame
+
+        await SceneManager.UnloadSceneAsync("0_MainMenu");
     }
 
     void NewGame()
@@ -22,7 +34,7 @@ public class MainMenu : MonoBehaviour
         difficultySelectUI.Display(StartGame);
     }
 
-    async void StartGame()
+    async void StartGame(int difficulty)
     {
         difficultySelectUI.Hide();
 

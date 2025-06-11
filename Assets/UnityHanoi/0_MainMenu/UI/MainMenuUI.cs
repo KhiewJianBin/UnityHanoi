@@ -28,9 +28,8 @@ public class MainMenuUI : MonoBehaviour
     {
         var main = UIDoc.rootVisualElement.Q("Main");
 
-        var buttonGrp = main.Q("ButtonGroup");
-        continueBtn = buttonGrp.Q("Continue") as Button;
-        newBtn = buttonGrp.Q("New") as Button;
+        continueBtn = main.Q("Continue") as Button;
+        newBtn = main.Q("New") as Button;
 
         continueBtn.RegisterCallback<ClickEvent>(OnContinueClick);
         newBtn.RegisterCallback<ClickEvent>(OnNewClick);

@@ -16,6 +16,15 @@ public class GameOverUI : MonoBehaviour
 
         this.playAgainAction = playAgainAction;
     }
+    public void Hide() => gameObject.SetActive(false);
+
+    void OnEnable()
+    {
+        var main = UIDoc.rootVisualElement.Q("Main");
+
+        playAgainBtn = main.Q("PlayAgain") as Button;
+        playAgainBtn.RegisterCallback<ClickEvent>(OnPlayAgainClick);
+    }
 
     void OnDisable()
     {
