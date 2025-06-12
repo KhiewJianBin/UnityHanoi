@@ -51,7 +51,7 @@ public class HanoiGameManager : MonoBehaviour
     public void GameStart(int difficulty)
     {
         StringBuilder sb = new();
-        for (int i = difficulty; i > 0; i--)
+        for (int i = difficulty - 1; i >= 0; i--)
         {
             sb.Append(i);
         }
@@ -248,7 +248,7 @@ public class HanoiGameManager : MonoBehaviour
                 transform.localScale = scale;
 
                 // Set Color
-                newDisk.GetComponent<MeshRenderer>().material.color = colors[number-1];
+                newDisk.GetComponent<MeshRenderer>().material.color = colors[number];
 
                 disks.Add(newDisk);
             }

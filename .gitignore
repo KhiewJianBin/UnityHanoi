@@ -88,3 +88,7 @@ Packages/*
 
 # DOTS
 /[Aa]ssets/SceneDependencyCache/
+
+# Unity Version Control
+/.plastic/*
+/.utmp/*
