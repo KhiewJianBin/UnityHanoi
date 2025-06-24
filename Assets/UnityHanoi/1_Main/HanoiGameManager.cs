@@ -118,7 +118,15 @@ public class HanoiGameManager : MonoBehaviour
     async Awaitable AnimateUpdateGameState(Tower towerStart, Tower towerEnd)
     {
         GameObject lastDisk = await towerStart.TakeOutLastDisk();
-        await towerEnd.TakeInDisk(lastDisk, diskLevelOffset);
+
+        var data = gameState.Split("_");
+        var towerLeft_data = data[0];
+        var towerMid_data = data[1];
+        var towerRight_data = data[2];
+
+        var pos = towerEnd.transform.position;
+        pos.y = data[towerEnd.Id].Length * diskLevelOffset;
+        await towerEnd.TakeInDisk(lastDisk, pos);
     }
     void OnDeselectTower()
     {
