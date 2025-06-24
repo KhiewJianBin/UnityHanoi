@@ -13,7 +13,7 @@ public class DifficultySelectUI : MonoBehaviour
     [SerializeField, HideInInspector] string DifficultyText = "Difficulty : [3]";
     [SerializeField, HideInInspector] int Difficulty = 3;
 
-    public void Display(UnityAction<int> startAction = null)
+    public void Show(UnityAction<int> startAction = null)
     {
         gameObject.SetActive(true);
 

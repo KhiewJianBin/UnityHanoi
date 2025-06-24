@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UnityHanoi/UI/defaultstyle.uss?fileID=7433441132597879392&amp;guid=2ad3c6a79ab963c47a394df7e9f5ef2c&amp;type=3#defaultstyle" />
+    <ui:VisualElement name="Main" class="gameover" style="justify-content: space-between; margin-top: 0%; margin-bottom: 0%; width: 100%; height: 100%; top: auto; right: auto;">
+        <ui:VisualElement name="ButtonGroup" style="right: auto; top: auto; align-items: flex-end; align-self: flex-end; padding-top: 25px; padding-right: 25px; padding-bottom: 25px; padding-left: 25px;">
+            <ui:Button text="Solve&#10;" name="Solve" enabled="true" class="gameover__button" style="font-size: 30px; height: 116px; margin-top: 0; margin-bottom: 0; margin-right: 0; margin-left: 0; padding-top: 25px; padding-right: 25px; padding-bottom: 25px; padding-left: 25px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

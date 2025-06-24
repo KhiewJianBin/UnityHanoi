@@ -12,6 +12,7 @@ public class HanoiGameManager : MonoBehaviour
 
     [SerializeField] GameObject diskPrefab;
 
+    [SerializeField] SolveUI solveUI;
     [SerializeField] GameOverUI gameOverUI;
 
     // Spawn Settings
@@ -46,6 +47,8 @@ public class HanoiGameManager : MonoBehaviour
         towerLeft.Id = 0;
         towerMid.Id = 1;
         towerRight.Id = 2;
+
+        solveUI.Show(Solve);
     }
 
     public void GameStart(int difficulty)
@@ -74,17 +77,66 @@ public class HanoiGameManager : MonoBehaviour
             //Save file corrupted
         }
     }
+
+    void Solve()
+    {
+        DoSolve();
+    }
+    async Awaitable DoSolve()
+    {
+        solveUI.Hide();
+
+        var a = towerLeft;
+        var b = towerMid;
+        var c = towerRight;
+
+        var data = gameState.Split("_");
+        var towerLeft_data = data[0];
+        var towerMid_data = data[1];
+        var towerRight_data = data[2];
+
+        Move(a, c, b,
+            towerLeft_data, towerRight_data, towerMid_data);
+
+        while (MoveQueue.Count > 0)
+        {
+            var (towerStart, towerEnd) = MoveQueue.Dequeue();
+
+            UpdateGameState(towerStart, towerEnd);
+            await AnimateUpdateGameState(towerStart, towerEnd);
+            LoadGameState();
+        }
+
+        solveUI.Show();
+    }
+
+    Queue<(Tower, Tower)> MoveQueue = new Queue<(Tower, Tower)>();
+    void Move(Tower from, Tower to, Tower spare,
+        string fromdata, string todata, string sparedata)
+    {
+        if (fromdata.Length == 0)
+        {
+            return;
+        }
+        
+        // 1
+        Move(from, spare, to,
+            fromdata.Remove(fromdata.Length - 1), sparedata, todata);
+
+        // 2
+        MoveQueue.Enqueue((from, to));
+
+        // 3
+        Move(spare, to, from, fromdata.Remove(fromdata.Length - 1), todata, fromdata);
+    }
+
+
     async Awaitable OnSelectTower(GameObject towerGO)
     {
         var tower = towerGO.GetComponent<Tower>();
 
         if (selectMode == TowerSelectMode.Start)
         {
-            if (selectedStartTower != null && selectedStartTower != tower)
-            {
-                selectedStartTower.Unhighlight();
-            }
-
             selectedStartTower = tower;
             selectedStartTower.Highlight();
 
@@ -92,6 +144,14 @@ public class HanoiGameManager : MonoBehaviour
         }
         else if (selectMode == TowerSelectMode.End)
         {
+            if (selectedStartTower != null && selectedStartTower == tower)
+            {
+                selectedStartTower.Unhighlight();
+                selectedStartTower = null;
+                selectMode = TowerSelectMode.Start;
+                return;
+            }
+
             UpdateGameState(selectedStartTower, tower);
             if (!VerifyGameState())
             {
@@ -111,7 +171,6 @@ public class HanoiGameManager : MonoBehaviour
 
             selectedStartTower.Unhighlight();
             selectedStartTower = null;
-
             selectMode = TowerSelectMode.Start;
         }
     }
@@ -120,9 +179,6 @@ public class HanoiGameManager : MonoBehaviour
         GameObject lastDisk = await towerStart.TakeOutLastDisk();
 
         var data = gameState.Split("_");
-        var towerLeft_data = data[0];
-        var towerMid_data = data[1];
-        var towerRight_data = data[2];
 
         var pos = towerEnd.transform.position;
         pos.y = data[towerEnd.Id].Length * diskLevelOffset;
@@ -276,7 +332,7 @@ public class HanoiGameManager : MonoBehaviour
     {
         Selector.Instance.UnRegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
 
-        gameOverUI.Display(PlayAgain);
+        gameOverUI.Show(PlayAgain);
 
         PlayerPrefs.DeleteKey("GameState");
         PlayerPrefs.Save();

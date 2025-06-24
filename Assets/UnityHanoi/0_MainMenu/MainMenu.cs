@@ -30,7 +30,7 @@ public class MainMenu : MonoBehaviour
     void NewGame()
     {
         mainMenuUI.Hide();
-        difficultySelectUI.Display(StartGame);
+        difficultySelectUI.Show(StartGame);
     }
 
     async void StartGame(int difficulty)

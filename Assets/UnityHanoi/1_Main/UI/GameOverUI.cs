@@ -10,7 +10,7 @@ public class GameOverUI : MonoBehaviour
 
     Button playAgainBtn;
 
-    public void Display(UnityAction playAgainAction = null)
+    public void Show(UnityAction playAgainAction = null)
     {
         gameObject.SetActive(true);
 
