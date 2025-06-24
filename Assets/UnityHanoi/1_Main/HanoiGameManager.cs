@@ -69,8 +69,12 @@ public class HanoiGameManager : MonoBehaviour
         {
             LoadGameState();
         }
+        else
+        {
+            //Save file corrupted
+        }
     }
-    void OnSelectTower(GameObject towerGO)
+    async Awaitable OnSelectTower(GameObject towerGO)
     {
         var tower = towerGO.GetComponent<Tower>();
 
@@ -95,6 +99,7 @@ public class HanoiGameManager : MonoBehaviour
             }
             else
             {
+                await AnimateUpdateGameState(selectedStartTower, tower);
                 SaveGameStateToFile();
                 LoadGameState();
             }
@@ -109,6 +114,11 @@ public class HanoiGameManager : MonoBehaviour
 
             selectMode = TowerSelectMode.Start;
         }
+    }
+    async Awaitable AnimateUpdateGameState(Tower towerStart, Tower towerEnd)
+    {
+        GameObject lastDisk = await towerStart.TakeOutLastDisk();
+        await towerEnd.TakeInDisk(lastDisk, diskLevelOffset);
     }
     void OnDeselectTower()
     {

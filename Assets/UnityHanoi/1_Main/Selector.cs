@@ -4,11 +4,13 @@ using UnityEngine.Events;
 public class Selector : Singleton<Selector>
 {
     LayerMask selectionLayerMask;
-    UnityAction<GameObject> onSelectionAction;
+    AwaitableSelect onSelectionAction;
     UnityAction onEmptySelectionAction;
 
+    public delegate Awaitable AwaitableSelect(GameObject go);
+
     public void RegisterSelection(int layerMask,
-        UnityAction<GameObject> onSelectionAction, UnityAction onEmptySelectionAction)
+        AwaitableSelect onSelectionAction, UnityAction onEmptySelectionAction)
     {
         selectionLayerMask |= layerMask;
 
@@ -17,7 +19,7 @@ public class Selector : Singleton<Selector>
     }
 
     public void UnRegisterSelection(int layerMask,
-        UnityAction<GameObject> onSelectionAction, UnityAction onEmptySelectionAction)
+        AwaitableSelect onSelectionAction, UnityAction onEmptySelectionAction)
     {
         selectionLayerMask &= ~layerMask;
 
