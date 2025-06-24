@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -38,9 +39,9 @@ public class HanoiGameManager : MonoBehaviour
     Tower selectedStartTower;
 
     // Game Cache
-    string prevGameState;
-    string gameState;
-    List<GameObject> disks = new();
+    string PrevGameState;
+    string GameState;
+    List<GameObject> Disks = new();
 
     void Awake()
     {
@@ -59,13 +60,13 @@ public class HanoiGameManager : MonoBehaviour
             sb.Append(i);
         }
         sb.Append("__");
-        gameState = sb.ToString();
+        GameState = sb.ToString();
 
-        GameStart(gameState);
+        GameStart(GameState);
     }
     public void GameStart(string gameState)
     {
-        this.gameState = gameState;
+        this.GameState = gameState;
 
         GameSetup();
         if (VerifyGameState())
@@ -84,13 +85,15 @@ public class HanoiGameManager : MonoBehaviour
     }
     async Awaitable DoSolve()
     {
+        Selector.Instance.UnRegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
+        DeSelectTower();
         solveUI.Hide();
 
         var a = towerLeft;
         var b = towerMid;
         var c = towerRight;
 
-        var data = gameState.Split("_");
+        var data = GameState.Split("_");
         var towerLeft_data = data[0];
         var towerMid_data = data[1];
         var towerRight_data = data[2];
@@ -106,8 +109,7 @@ public class HanoiGameManager : MonoBehaviour
             await AnimateUpdateGameState(towerStart, towerEnd);
             LoadGameState();
         }
-
-        solveUI.Show();
+        EndGame();
     }
 
     Queue<(Tower, Tower)> MoveQueue = new Queue<(Tower, Tower)>();
@@ -118,7 +120,7 @@ public class HanoiGameManager : MonoBehaviour
         {
             return;
         }
-        
+
         // 1
         Move(from, spare, to,
             fromdata.Remove(fromdata.Length - 1), sparedata, todata);
@@ -144,18 +146,16 @@ public class HanoiGameManager : MonoBehaviour
         }
         else if (selectMode == TowerSelectMode.End)
         {
-            if (selectedStartTower != null && selectedStartTower == tower)
+            if (selectedStartTower == tower)
             {
-                selectedStartTower.Unhighlight();
-                selectedStartTower = null;
-                selectMode = TowerSelectMode.Start;
+                DeSelectTower();
                 return;
             }
 
             UpdateGameState(selectedStartTower, tower);
             if (!VerifyGameState())
             {
-                gameState = prevGameState;
+                GameState = PrevGameState;
             }
             else
             {
@@ -169,16 +169,23 @@ public class HanoiGameManager : MonoBehaviour
                 EndGame();
             }
 
+            DeSelectTower();
+        }
+    }
+    void DeSelectTower()
+    {
+        if (selectedStartTower)
+        {
             selectedStartTower.Unhighlight();
             selectedStartTower = null;
-            selectMode = TowerSelectMode.Start;
         }
+        selectMode = TowerSelectMode.Start;
     }
     async Awaitable AnimateUpdateGameState(Tower towerStart, Tower towerEnd)
     {
         GameObject lastDisk = await towerStart.TakeOutLastDisk();
 
-        var data = gameState.Split("_");
+        var data = GameState.Split("_");
 
         var pos = towerEnd.transform.position;
         pos.y = data[towerEnd.Id].Length * diskLevelOffset;
@@ -186,18 +193,12 @@ public class HanoiGameManager : MonoBehaviour
     }
     void OnDeselectTower()
     {
-        if (selectedStartTower != null)
-        {
-            selectedStartTower.Unhighlight();
-            selectedStartTower = null;
-
-            selectMode = TowerSelectMode.Start;
-        }
+        DeSelectTower();
     }
 
     void UpdateGameState(Tower towerStart, Tower towerEnd)
     {
-        var data = gameState.Split("_");
+        var data = GameState.Split("_");
         var towerLeft_data = data[0];
         var towerMid_data = data[1];
         var towerRight_data = data[2];
@@ -208,12 +209,12 @@ public class HanoiGameManager : MonoBehaviour
         data[towerEnd.Id] = data[towerEnd.Id] + lastChar;
         data[towerStart.Id] = data[towerStart.Id].Remove(data[towerStart.Id].Length - 1);
 
-        prevGameState = gameState;
-        gameState = string.Join('_', data);
+        PrevGameState = GameState;
+        GameState = string.Join('_', data);
     }
     bool VerifyWinGameState()
     {
-        var data = gameState.Split("_");
+        var data = GameState.Split("_");
         var towerLeft_data = data[0];
         var towerMid_data = data[1];
         var towerRight_data = data[2];
@@ -234,13 +235,13 @@ public class HanoiGameManager : MonoBehaviour
     }
     bool VerifyGameState()
     {
-        var data = gameState.Split("_");
+        var data = GameState.Split("_");
         var towerLeft_data = data[0];
         var towerMid_data = data[1];
         var towerRight_data = data[2];
 
         // Verify Tower Data
-        if (!VerifyMissingOrDuplicates(gameState))
+        if (!VerifyMissingOrDuplicates(GameState))
         {
             Debug.LogWarning("GameState/Data Corrupted");
             return false;
@@ -283,18 +284,18 @@ public class HanoiGameManager : MonoBehaviour
     }
     void LoadGameState()
     {
-        var data = gameState.Split("_");
+        var data = GameState.Split("_");
         var towerLeft_data = data[0];
         var towerMid_data = data[1];
         var towerRight_data = data[2];
         var maxNumberOfDisk = towerLeft_data.Length + towerMid_data.Length + towerRight_data.Length;
 
         //GameClear
-        foreach (var disk in disks)
+        foreach (var disk in Disks)
         {
             Destroy(disk);
         }
-        disks = new();
+        Disks = new();
 
         LoadTower(towerLeft, towerLeft_data, maxNumberOfDisk);
         LoadTower(towerMid, towerMid_data, maxNumberOfDisk);
@@ -324,7 +325,7 @@ public class HanoiGameManager : MonoBehaviour
                 // Set Color
                 newDisk.GetComponent<MeshRenderer>().material.color = colors[number];
 
-                disks.Add(newDisk);
+                Disks.Add(newDisk);
             }
         }
     }
@@ -344,7 +345,7 @@ public class HanoiGameManager : MonoBehaviour
 
     void SaveGameStateToFile()
     {
-        PlayerPrefs.SetString("GameState", gameState);
+        PlayerPrefs.SetString("GameState", GameState);
         PlayerPrefs.Save();
     }
 
