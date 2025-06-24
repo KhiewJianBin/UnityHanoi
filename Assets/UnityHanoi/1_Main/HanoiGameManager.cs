@@ -83,6 +83,7 @@ public class HanoiGameManager : MonoBehaviour
     {
         DoSolve();
     }
+
     async Awaitable DoSolve()
     {
         Selector.Instance.UnRegisterSelection(LayerMask.GetMask("Tower"), OnSelectTower, OnDeselectTower);
@@ -98,8 +99,51 @@ public class HanoiGameManager : MonoBehaviour
         var towerMid_data = data[1];
         var towerRight_data = data[2];
 
-        Move(a, c, b,
-            towerLeft_data, towerRight_data, towerMid_data);
+        // 1. Get all in one tower
+        var largest = towerLeft_data.Length + towerMid_data.Length + towerRight_data.Length - 1;
+        for (int i = 0; i < largest; i++)
+        {
+            var start = find(i.ToString());
+            var end = find((i + 1).ToString());
+
+            if (start != end)
+            {
+                Tower spare;
+                if (start != towerLeft && end != towerLeft)
+                {
+                    spare = towerLeft;
+                }
+                else if (start != towerRight && end != towerRight)
+                {
+                    spare = towerRight;
+                }
+                else
+                {
+                    spare = towerMid;
+                }
+
+                data = GameState.Split("_");
+                Move(start, end, spare,
+                    data[start.Id].Substring(data[start.Id].Length - (i + 1)), data[end.Id], data[spare.Id]);
+
+                while (MoveQueue.Count > 0)
+                {
+                    var (towerStart, towerEnd) = MoveQueue.Dequeue();
+
+                    UpdateGameState(towerStart, towerEnd);
+                    await AnimateUpdateGameState(towerStart, towerEnd);
+                    LoadGameState();
+                }
+            }
+        }
+
+        //2. Classic recursive algo
+        data = GameState.Split("_");
+        var fromtower = data[towerLeft.Id] != "" ? towerLeft : towerMid;
+        var sparetower = data[towerLeft.Id] != "" ? towerMid : towerLeft;
+
+        Move(fromtower, c, sparetower,
+            data[fromtower.Id], data[c.Id], data[sparetower.Id]);
 
         while (MoveQueue.Count > 0)
         {
@@ -109,7 +153,11 @@ public class HanoiGameManager : MonoBehaviour
             await AnimateUpdateGameState(towerStart, towerEnd);
             LoadGameState();
         }
-        EndGame();
+
+        if (VerifyGameState())
+        {
+            EndGame();
+        }
     }
 
     Queue<(Tower, Tower)> MoveQueue = new Queue<(Tower, Tower)>();
@@ -353,7 +401,17 @@ public class HanoiGameManager : MonoBehaviour
     [ContextMenu("TestStart")]
     void Test()
     {
-        GameStart("321__");
+        GameStart("6543210__7");
     }
     #endregion
+
+
+    Tower find(string a)
+    {
+        var data = GameState.Split("_");
+        if (data[towerLeft.Id].Contains(a)) return towerLeft;
+        if (data[towerMid.Id].Contains(a)) return towerMid;
+        if (data[towerRight.Id].Contains(a)) return towerRight;
+        return null;
+    }
 }
