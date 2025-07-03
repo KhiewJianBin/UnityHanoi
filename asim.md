@@ -1,5 +1,7 @@
 Two types of games
+
 Data Stated  Games : Games that can be represented and update soley as states/data. Gameplay/Visuals/Story progresses is centered around updating the states. E.g Chess
+
 Simulated Games : Games that uses simulation Gameplay/Visuals/Story and progress is centered around having a system/engine to simulated do updates.
 
 Data Stated Games needs to have
